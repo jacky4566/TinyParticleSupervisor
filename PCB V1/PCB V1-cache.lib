@@ -107,12 +107,12 @@ X VCC 8 0 600 100 D 50 50 1 1 W
 ENDDRAW
 ENDDEF
 #
-# MargoGeneral_BoronV1.0
+# ProjectSymbols_BoronV1.0
 #
-DEF MargoGeneral_BoronV1.0 U 0 40 Y Y 1 F N
+DEF ProjectSymbols_BoronV1.0 U 0 40 Y Y 1 F N
 F0 "U" -250 -200 50 H V C CNN
-F1 "MargoGeneral_BoronV1.0" -250 -300 50 H V C CNN
-F2 "Margo_Lib:BoronV1.0" -350 -300 50 H I C CNN
+F1 "ProjectSymbols_BoronV1.0" -250 -300 50 H V C CNN
+F2 "ProjectFootprints:BoronV1.0" -350 -300 50 H I C CNN
 F3 "" -250 -200 50 H I C CNN
 DRAW
 T 0 950 1450 50 0 0 0 LiPo Normal 0 C C

@@ -135,12 +135,12 @@ ATTINYRQ
 Text Label 2050 4775 0    50   ~ 0
 RST
 $Comp
-L MargoGeneral:BoronV1.0 U4
+L ProjectSymbols:BoronV1.0 U4
 U 1 1 5D9840F9
 P 2100 2950
 F 0 "U4" H 2650 4815 50  0000 C CNN
 F 1 "BoronV1.0" H 2650 4724 50  0000 C CNN
-F 2 "Margo_Lib:BoronV1.0" H 1750 2650 50  0001 C CNN
+F 2 "ProjectFootprints:BoronV1.0" H 1750 2650 50  0001 C CNN
 F 3 "" H 1850 2750 50  0001 C CNN
 	1    2100 2950
 	1    0    0    -1  
