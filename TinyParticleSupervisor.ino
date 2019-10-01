@@ -2,7 +2,6 @@
 //LOW:C2  
 //HIGH:DF
 //EXT:FF
-
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <Wire.h>
@@ -43,6 +42,17 @@ void loop() {
   //Check if boron is awake
   digitalRead(BoronRQPin) ? boronAwake = true : boronAwake = false;
 
+  //Should I be waking the Particle master?
+  if (WakeTime > UNIXTime) {
+    //Boron Wakes
+    pinMode(BoronENPin, INPUT);
+  } else {
+    //Boron Sleeps
+    pinMode(BoronENPin, OUTPUT);
+    digitalWrite(BoronENPin, LOW);
+  }
+
+  //Do we need to toggle the I2C on or off
   if (boronAwake && !I2CActive) { //Activate I2C
     Wire.begin(I2CADDR);
     Wire.onReceive(receiveEvent); // register event
@@ -54,20 +64,13 @@ void loop() {
     I2CActive = false;
   }
 
-  if (WakeTime > UNIXTime) {
-    //Boron Wakes
-    pinMode(BoronENPin, INPUT);
-  } else {
-    //Boron Sleeps
-    pinMode(BoronENPin, OUTPUT);
-    digitalWrite(BoronENPin, LOW);
-  }
-
+  //Go to sleep
   if (!I2CActive) {
     sleep();
+  }else{
+    //future idle state
   }
 }
-
 
 void requestEvent() {
   //Might need to use this version?
@@ -118,11 +121,9 @@ void sleep() {
 }
 
 void patTheDog(){
-  //Watch Dog Timer is setup in interrupt and reset mode. Each interrupt increaments the UNIXTime variable. 
-  //Reset will happen only if this routine is not serviced for 1s
-  //Increament unix timer
+    //increament unix timer
   UNIXTime++;
-  // allow wdt changes, disable reset
+  // allow changes, disable reset
   WDTCR = bit (WDCE) | bit (WDE);
   // set interrupt and reset mode and an interval
   WDTCR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);    // set WDIE, and 1 second delay
