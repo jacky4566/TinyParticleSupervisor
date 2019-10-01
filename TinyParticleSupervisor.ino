@@ -1,3 +1,8 @@
+//Recomneded fuse settings for ATTINY 45, Internal 8MHZ no startup delay, no BOD
+//LOW:C2  
+//HIGH:DF
+//EXT:FF
+
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <Wire.h>
