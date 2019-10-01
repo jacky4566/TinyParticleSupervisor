@@ -29,7 +29,10 @@ union 32bitArray {
 };
 
 void setup() {
+  patTheDog();
   ADCSRA = 0; //dont need ADC
+  GIMSK = _BV(PCIE);                     // Enable Pin Change interrupts
+  PCMSK |= _BV(PCINT2);                  // Use PB2 as in
 }
 
 void loop() {
@@ -47,13 +50,13 @@ void loop() {
     I2CActive = false;
   }
 
-  if (UNIXTime < WakeTime) {
+  if (WakeTime > UNIXTime) {
+    //Boron Wakes
+    pinMode(BoronENPin, INPUT);
+  } else {
     //Boron Sleeps
     pinMode(BoronENPin, OUTPUT);
     digitalWrite(BoronENPin, LOW);
-  } else {
-    //Boron Wakes
-    pinMode(BoronENPin, INPUT);
   }
 
   if (!I2CActive) {
@@ -101,10 +104,6 @@ void receiveEvent(int bytesReceived) {
 void Sleep() {
   // clear various "reset" flags
   MCUSR = 0;
-  // allow changes, disable reset
-  WDTCR = bit (WDCE) | bit (WDE);
-  // set interrupt and reset mode and an interval
-  WDTCR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);
   set_sleep_mode (SLEEP_MODE_PWR_DOWN);
   noInterrupts ();
   sleep_enable();
@@ -114,11 +113,19 @@ void Sleep() {
   sleep_disable();
 }
 
-ISR(WDT_vect) {
-  //increament unix timer
+void patTheDog(){
+    //increament unix timer
   UNIXTIME++;
   // allow changes, disable reset
   WDTCR = bit (WDCE) | bit (WDE);
   // set interrupt and reset mode and an interval
   WDTCR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);    // set WDIE, and 1 second delay
+}
+
+ISR(WDT_vect) {
+  patTheDog();
+}
+
+ISR(PCINT0_vect) {
+//Wake on pinRQ
 }
