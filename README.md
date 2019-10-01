@@ -6,6 +6,9 @@ Also keeps somewhat real time!
 
 # Registers
 All registers read and write 32 bit
+
 I2C Address = 0x07
+
 unixTimeRegister 0x01
+
 wakeTimeRegister 0x02
