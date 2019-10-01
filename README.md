@@ -4,6 +4,14 @@ ATTINY simulates I2C for two registers and controls the sleep pin according to i
 When unixTimeRegister is greater than wakeTimeRegister the Paricle enable pin is held low. Otherwise pin floats.
 Also keeps somewhat real time!
 
+# Wiring
+| Pin Mode | Function | Core Pin | ATTINY45 PIN / PORT |
+| ------------- | ------------- | ------------- | ------------- |
+| OUTPUT  | Control Particle EN pin| 3  | 2 / PB3 |
+| INPUT  | Detect if Particle is awake  | 4  | 3 / PB4 |
+| INPUT  | I2C SDA  | 2  | 5 / PB0 |
+| INPUT  | I2C SCL  | 2  | 7 / PB2 |
+
 # Registers
 All registers read and write 32 bit
 
