@@ -23,7 +23,7 @@ boolean boronAwake = false; //Is the boron awake?
 uint32_t UNIXTime = 1569463512;  //Current time
 uint32_t WakeTime = 1569463512;  //Next wake time
 
-union 32bitArray {
+union fourByteArray {
   byte array[4];
   uint32_t integer;
 };
@@ -86,7 +86,7 @@ void receiveEvent(int bytesReceived) {
   opcode = Wire.read();
   // If there are more than 1 byte, then the master is writing to the slave
   if (bytesReceived > 1) {
-    ArrayToInteger converter; //Create a converter
+    fourByteArray converter; //Create a converter
     for (int i = 0 ; i < 4 ; i++) {
       converter.array[i] = Wire.read();
     }
@@ -101,7 +101,7 @@ void receiveEvent(int bytesReceived) {
   }
 }
 
-void Sleep() {
+void sleep() {
   // clear various "reset" flags
   MCUSR = 0;
   set_sleep_mode (SLEEP_MODE_PWR_DOWN);
@@ -115,7 +115,7 @@ void Sleep() {
 
 void patTheDog(){
     //increament unix timer
-  UNIXTIME++;
+  UNIXTime++;
   // allow changes, disable reset
   WDTCR = bit (WDCE) | bit (WDE);
   // set interrupt and reset mode and an interval
