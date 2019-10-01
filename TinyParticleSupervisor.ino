@@ -2,8 +2,8 @@
 #include <avr/wdt.h>
 #include <Wire.h>
 
-#define BoronENPin 1
-#define BoronRQPin 2
+#define BoronENPin 3
+#define BoronRQPin 4
 //SDA DI PB0
 //SCL SCL PB2
 
@@ -31,8 +31,7 @@ union fourByteArray {
 void setup() {
   patTheDog();
   ADCSRA = 0; //dont need ADC
-  GIMSK = _BV(PCIE);                     // Enable Pin Change interrupts
-  PCMSK |= _BV(PCINT2);                  // Use PB2 as in
+  attachInterrupt(digitalPinToInterrupt(BoronRQPin), wakeISR, RISING);
 }
 
 void loop() {
@@ -126,6 +125,6 @@ ISR(WDT_vect) {
   patTheDog();
 }
 
-ISR(PCINT0_vect) {
-//Wake on pinRQ
+void wakeISR(){
+  
 }
