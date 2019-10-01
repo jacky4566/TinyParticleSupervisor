@@ -9,7 +9,7 @@ Also keeps somewhat real time!
 | ------------- | ------------- | ------------- | ------------- |
 | OUTPUT  | Control Particle EN pin| 3  | 2 / PB3 |
 | INPUT  | Detect if Particle is awake  | 4  | 3 / PB4 |
-| INPUT  | I2C SDA  | 2  | 5 / PB0 |
+| INPUT  | I2C SDA  | 0  | 5 / PB0 |
 | INPUT  | I2C SCL  | 2  | 7 / PB2 |
 
 # Registers
