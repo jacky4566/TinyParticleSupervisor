@@ -118,9 +118,11 @@ void sleep() {
 }
 
 void patTheDog(){
-    //increament unix timer
+  //Watch Dog Timer is setup in interrupt and reset mode. Each interrupt increaments the UNIXTime variable. 
+  //Reset will happen only if this routine is not serviced for 1s
+  //Increament unix timer
   UNIXTime++;
-  // allow changes, disable reset
+  // allow wdt changes, disable reset
   WDTCR = bit (WDCE) | bit (WDE);
   // set interrupt and reset mode and an interval
   WDTCR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);    // set WDIE, and 1 second delay
