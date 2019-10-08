@@ -1,11 +1,12 @@
 //Recomneded fuse settings for ATTINY 45, Internal 8MHZ no startup delay, no BOD
-//LOW:C2  
+//LOW:C2
 //HIGH:DF
 //EXT:FF
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include <Wire.h>
 
+#define RTCTICK 1
 #define BoronENPin 3
 #define BoronRQPin 4
 //SDA DI PB0
@@ -19,7 +20,6 @@
 
 //State machine
 byte opcode = 0; //what register is being targeted by I2C?
-
 boolean I2CActive = false;  //Is I2C active?
 boolean boronAwake = false; //Is the boron awake?
 
@@ -33,9 +33,10 @@ union fourByteArray {
 };
 
 void setup() {
-  patTheDog();
+  WDTSetup();
   ADCSRA = 0; //dont need ADC
-  attachInterrupt(digitalPinToInterrupt(BoronRQPin), wakeISR, RISING);
+  attachInterrupt(BoronRQPin, wakeISR, RISING);
+  pinMode(RTCTICK, OUTPUT);
 }
 
 void loop() {
@@ -43,7 +44,7 @@ void loop() {
   digitalRead(BoronRQPin) ? boronAwake = true : boronAwake = false;
 
   //Should I be waking the Particle master?
-  if (WakeTime > UNIXTime) {
+  if (WakeTime >= UNIXTime) {
     //Boron Wakes
     pinMode(BoronENPin, INPUT);
   } else {
@@ -67,7 +68,7 @@ void loop() {
   //Go to sleep
   if (!I2CActive) {
     sleep();
-  }else{
+  } else {
     //future idle state
   }
 }
@@ -75,12 +76,21 @@ void loop() {
 void requestEvent() {
   //Might need to use this version?
   //Wire.write((uint8_t *)&speed, sizeof(speed));
+  fourByteArray converter;
   switch (opcode) {
     case unixTimeRegister:
-      Wire.write(UNIXTime);
+      converter.integer = UNIXTime;
+      Wire.write(converter.array[0]);
+      Wire.write(converter.array[1]);
+      Wire.write(converter.array[2]);
+      Wire.write(converter.array[3]);
       break;
     case WakeTimeRegister:
-      Wire.write(WakeTime);
+      converter.integer = WakeTime;
+      Wire.write(converter.array[0]);
+      Wire.write(converter.array[1]);
+      Wire.write(converter.array[2]);
+      Wire.write(converter.array[3]);
       break;
     default:
       Wire.write(0); //What are you asking?
@@ -94,7 +104,7 @@ void receiveEvent(int bytesReceived) {
   // If there are more than 1 byte, then the master is writing to the slave
   if (bytesReceived > 1) {
     fourByteArray converter; //Create a converter
-    for (int i = 0 ; i < 4 ; i++) {
+    for (int i = 0; i < 4 ; i++) {
       converter.array[i] = Wire.read();
     }
     if (opcode == unixTimeRegister) {
@@ -120,19 +130,22 @@ void sleep() {
   sleep_disable();
 }
 
-void patTheDog(){
-    //increament unix timer
-  UNIXTime++;
+void WDTSetup() {
+  cli();
+  MCUSR = 0;
   // allow changes, disable reset
   WDTCR = bit (WDCE) | bit (WDE);
   // set interrupt and reset mode and an interval
   WDTCR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);    // set WDIE, and 1 second delay
+  sei();
 }
 
 ISR(WDT_vect) {
-  patTheDog();
+  UNIXTime++;//increament unix timer
+  PORTB ^= _BV(PB1); //Toggle extra pin for RTCtick
+  WDTCR |= bit (WDIE);
 }
 
-void wakeISR(){
-  
+void wakeISR() {
+
 }
