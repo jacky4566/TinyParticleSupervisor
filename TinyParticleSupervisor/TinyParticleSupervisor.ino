@@ -1,27 +1,27 @@
-//Recomneded fuse settings for ATTINY 45, Internal 8MHZ no startup delay, no BOD
-//LOW:C2
+//Recomneded fuse settings for ATTINY 44, Internal 8MHZ, 4ms start delay, no BOD
+//LOW:D2
 //HIGH:DF
 //EXT:FF
-#include <avr/sleep.h>
-#include <avr/wdt.h>
-#include <Wire.h>
+#include <avr/sleep.h> //Needed for sleep_mode
+#include <avr/wdt.h> //Needed to enable/disable watch dog timer
+#include <Wire.h> //Needed for I2C
 
-#define RTCTICK 1
-#define BoronENPin 3
-#define BoronRQPin 4
-//SDA DI PB0
-//SCL SCL PB2
+static int BoronENpin = 1;
+static int BoronRQPin = 2;
+static int VBAT_OKpin = 3;
+static int LEDpin = 10;
 
 #define I2CADDR 0x07
-
+static uint32_t myID = 0xF222222F;
 //Our I2C "Registers" 32 bit
 #define unixTimeRegister 0x01
 #define WakeTimeRegister 0x02
+#define myIDRegister 0x03
 
 //State machine
 byte opcode = 0; //what register is being targeted by I2C?
-boolean I2CActive = false;  //Is I2C active?
 boolean boronAwake = false; //Is the boron awake?
+boolean boronControlState = false;
 
 //Time Machine
 uint32_t UNIXTime = 1569463512;  //Current time
@@ -33,43 +33,76 @@ union fourByteArray {
 };
 
 void setup() {
-  WDTSetup();
-  ADCSRA = 0; //dont need ADC
-  attachInterrupt(BoronRQPin, wakeISR, RISING);
-  pinMode(RTCTICK, OUTPUT);
+  ADCSRA = 0; //Disable ADC, saves ~230uA
+  pinMode(LEDpin, OUTPUT);
+  setup_watchdog(); //Setup watchdog to go off after 1sec
+  Wire.begin(I2CADDR);
+  PCMSK0 |= bit (PCINT2); //enable PC interupt on PA2
+  GIMSK |= bit (PCIE0); //enable PC interupts on bank 0
 }
 
 void loop() {
-  //Check if boron is awake
-  digitalRead(BoronRQPin) ? boronAwake = true : boronAwake = false;
+  WDTCSR |= bit (WDIE); //kick the dog
+
+  //compute I2C
+  Wire.onReceive(receiveEvent);
+  Wire.onRequest(requestEvent);
 
   //Should I be waking the Particle master?
-  if (WakeTime >= UNIXTime) {
-    //Boron Wakes
-    pinMode(BoronENPin, INPUT);
+  if (((UNIXTime >= WakeTime) || digitalRead(BoronRQPin)) && digitalRead(VBAT_OKpin)) {
+    boronToggle(1);
+    idle();
   } else {
-    //Boron Sleeps
-    pinMode(BoronENPin, OUTPUT);
-    digitalWrite(BoronENPin, LOW);
-  }
-
-  //Do we need to toggle the I2C on or off
-  if (boronAwake && !I2CActive) { //Activate I2C
-    Wire.begin(I2CADDR);
-    Wire.onReceive(receiveEvent); // register event
-    Wire.onRequest(requestEvent);
-    opcode = 0;
-    I2CActive = true;
-  } else if (!boronAwake && I2CActive) { //De-activate I2C
-    Wire.end();
-    I2CActive = false;
-  }
-
-  //Go to sleep
-  if (!I2CActive) {
+    boronToggle(0);
     sleep();
-  } else {
-    //future idle state
+  }
+}
+
+void sleep() {
+  sleep_enable();
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); //Power down everything, wake up from WDT
+  sleep_cpu();
+}
+
+void idle(){
+  sleep_enable();
+  set_sleep_mode(SLEEP_MODE_IDLE);
+  sleep_cpu ();
+}
+
+ISR(WDT_vect) {
+  //Wake up
+  UNIXTime++;//increament unix timer
+}
+
+ISR(PCINT0_vect) {
+  //wake on Pin Change
+}
+
+//Sets the watchdog timer to wake us up, but not reset
+void setup_watchdog() {
+  cli();
+  MCUSR = 0;
+  // allow changes, disable reset
+  WDTCSR = bit (WDCE) | bit (WDE);
+  // set interrupt and reset mode and an interval
+  WDTCSR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);    // set WDIE, and 1 second delay
+  sei();
+}
+
+void boronToggle(boolean newState) {
+  if (boronControlState == 1 && newState == 1) {
+    //do nothing
+  } else if (boronControlState == 1 && newState == 0) {
+    //turn off
+    pinMode(BoronENpin, INPUT);
+    boronControlState = 0;
+  } else if (boronControlState == 0 && newState == 0) {
+    //do nothing
+  } else if (boronControlState == 0 && newState == 1) {
+    pinMode(BoronENpin, OUTPUT);
+    digitalWrite(BoronENpin, LOW);
+    boronControlState = 1;
   }
 }
 
@@ -92,10 +125,18 @@ void requestEvent() {
       Wire.write(converter.array[2]);
       Wire.write(converter.array[3]);
       break;
+    case myIDRegister:
+      converter.integer = myID;
+      Wire.write(converter.array[0]);
+      Wire.write(converter.array[1]);
+      Wire.write(converter.array[2]);
+      Wire.write(converter.array[3]);
+      break;
     default:
       Wire.write(0); //What are you asking?
-      return;
+      break;
   }
+  opcode = 0;
 }
 
 void receiveEvent(int bytesReceived) {
@@ -113,39 +154,4 @@ void receiveEvent(int bytesReceived) {
       WakeTime = converter.integer;
     }
   }
-  while (Wire.available()) { //empty extra junk
-    Wire.read();
-  }
-}
-
-void sleep() {
-  // clear various "reset" flags
-  MCUSR = 0;
-  set_sleep_mode (SLEEP_MODE_PWR_DOWN);
-  noInterrupts ();
-  sleep_enable();
-  interrupts ();
-  sleep_cpu ();
-  //Sleep here
-  sleep_disable();
-}
-
-void WDTSetup() {
-  cli();
-  MCUSR = 0;
-  // allow changes, disable reset
-  WDTCR = bit (WDCE) | bit (WDE);
-  // set interrupt and reset mode and an interval
-  WDTCR = bit (WDE) | bit (WDIE) | bit (WDP2) | bit (WDP1);    // set WDIE, and 1 second delay
-  sei();
-}
-
-ISR(WDT_vect) {
-  UNIXTime++;//increament unix timer
-  PORTB ^= _BV(PB1); //Toggle extra pin for RTCtick
-  WDTCR |= bit (WDIE);
-}
-
-void wakeISR() {
-
 }
