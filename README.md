@@ -22,8 +22,6 @@ unixTimeRegister 0x01 (Increaments at 1HZ from WDT)
 wakeTimeRegister 0x02
 
 # TODO:
-*Add defines to support both ATTINYx5 and ATTINYx4
-
-*Investigate alternate chips, ATtiny13A , perhaps STM32L0 for lower run power, RTC crystal, Proper I2C
-
-*Add function to read VCC for boards without Power Good Signal
+- Add defines to support both ATTINYx5 and ATTINYx4
+- Investigate alternate chips, ATtiny13A , perhaps STM32L0 for lower run power, RTC crystal, Proper I2C
+- Add function to read VCC for boards without Power Good Signal
