@@ -1,7 +1,5 @@
-//Recomneded fuse settings for ATTINY 44, Internal 8MHZ, 4ms start delay, no BOD
-//LOW:D2
-//HIGH:DF
-//EXT:FF
+//Ensure 8MHz Internal
+//BOD optional, uses more power
 #include <avr/sleep.h> //Needed for sleep_mode
 #include <avr/wdt.h> //Needed to enable/disable watch dog timer
 #include <Wire.h> //Needed for I2C
@@ -20,7 +18,6 @@ static uint32_t myID = 0xF222222F;
 
 //State machine
 byte opcode = 0; //what register is being targeted by I2C?
-boolean boronAwake = false; //Is the boron awake?
 boolean boronControlState = false;
 
 //Time Machine
@@ -33,8 +30,8 @@ union fourByteArray {
 };
 
 void setup() {
-  ADCSRA = 0; //Disable ADC, saves ~230uA
-  pinMode(LEDpin, OUTPUT);
+  ADCSRA = 0; //Disable ADC, saves ~300uA
+  pinMode(BoronENpin, OUTPUT);
   setup_watchdog(); //Setup watchdog to go off after 1sec
   Wire.begin(I2CADDR);
   PCMSK0 |= bit (PCINT2); //enable PC interupt on PA2
@@ -55,6 +52,16 @@ void loop() {
   } else {
     boronToggle(0);
     sleep();
+  }
+}
+
+void LEDSTATE(byte newState){//Used for debugging
+  if (newState){
+    pinMode(LEDpin, OUTPUT);
+    digitalWrite(LEDpin, HIGH);
+  }else{
+    digitalWrite(LEDpin, LOW);
+    pinMode(LEDpin, INPUT);
   }
 }
 
@@ -95,20 +102,17 @@ void boronToggle(boolean newState) {
     //do nothing
   } else if (boronControlState == 1 && newState == 0) {
     //turn off
-    pinMode(BoronENpin, INPUT);
+  digitalWrite(BoronENpin, LOW);
     boronControlState = 0;
   } else if (boronControlState == 0 && newState == 0) {
     //do nothing
   } else if (boronControlState == 0 && newState == 1) {
-    pinMode(BoronENpin, OUTPUT);
-    digitalWrite(BoronENpin, LOW);
+    digitalWrite(BoronENpin, HIGH);
     boronControlState = 1;
   }
 }
 
 void requestEvent() {
-  //Might need to use this version?
-  //Wire.write((uint8_t *)&speed, sizeof(speed));
   fourByteArray converter;
   switch (opcode) {
     case unixTimeRegister:
@@ -133,7 +137,10 @@ void requestEvent() {
       Wire.write(converter.array[3]);
       break;
     default:
-      Wire.write(0); //What are you asking?
+      Wire.write(0x0); //What are you asking? OPCODE not recognized
+    Wire.write(0x0);
+    Wire.write(0x0);
+    Wire.write(0x0);
       break;
   }
   opcode = 0;

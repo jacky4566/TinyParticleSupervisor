@@ -1,0 +1,366 @@
+EESchema Schematic File Version 4
+LIBS:ATTINYIntegrationExample-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text GLabel 2000 2475 0    50   Input ~ 0
+3v3
+Text GLabel 4850 2775 2    50   Input ~ 0
+LiPo+
+Text GLabel 3300 3775 2    50   Input ~ 0
+SCL
+Text GLabel 3300 3875 2    50   Input ~ 0
+SDA
+$Comp
+L Device:R_Small R2
+U 1 1 5D90AA56
+P 5300 3925
+F 0 "R2" H 5200 3900 50  0000 C CNN
+F 1 "10k" H 5175 3975 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" H 5300 3925 50  0001 C CNN
+F 3 "~" H 5300 3925 50  0001 C CNN
+	1    5300 3925
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_Small R1
+U 1 1 5D9101E3
+P 5200 3925
+F 0 "R1" H 5350 3900 50  0000 C CNN
+F 1 "10k" H 5325 3975 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" H 5200 3925 50  0001 C CNN
+F 3 "~" H 5200 3925 50  0001 C CNN
+	1    5200 3925
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5200 3825 5200 3775
+Wire Wire Line
+	5200 3775 5300 3775
+Wire Wire Line
+	5300 3775 5300 3825
+Text GLabel 5200 3775 0    50   Input ~ 0
+3v3
+Text GLabel 5200 4025 3    50   Input ~ 0
+SDA
+Text GLabel 5300 4025 3    50   Input ~ 0
+SCL
+Text GLabel 3600 3075 2    50   Input ~ 0
+ATTINYRQ
+$Comp
+L MargoGeneral:BoronV1.0 U4
+U 1 1 5D9840F9
+P 2100 3925
+F 0 "U4" H 2650 5790 50  0000 C CNN
+F 1 "BoronV1.0" H 2650 5699 50  0000 C CNN
+F 2 "Margo_Lib:BoronV1.0" H 1750 3625 50  0001 C CNN
+F 3 "" H 1850 3725 50  0001 C CNN
+	1    2100 3925
+	1    0    0    -1  
+$EndComp
+Text GLabel 7150 3050 0    50   Input ~ 0
+SDA
+$Comp
+L power:GND #PWR0109
+U 1 1 5D96312D
+P 2000 2675
+F 0 "#PWR0109" H 2000 2425 50  0001 C CNN
+F 1 "GND" H 2005 2502 50  0000 C CNN
+F 2 "" H 2000 2675 50  0001 C CNN
+F 3 "" H 2000 2675 50  0001 C CNN
+	1    2000 2675
+	0    1    1    0   
+$EndComp
+Text GLabel 4850 2975 2    50   Input ~ 0
+BoronEN
+$Comp
+L power:GND #PWR0111
+U 1 1 5DD40434
+P 8250 3950
+F 0 "#PWR0111" H 8250 3700 50  0001 C CNN
+F 1 "GND" H 8255 3777 50  0000 C CNN
+F 2 "" H 8250 3950 50  0001 C CNN
+F 3 "" H 8250 3950 50  0001 C CNN
+	1    8250 3950
+	1    0    0    -1  
+$EndComp
+Text GLabel 7150 2850 0    50   Input ~ 0
+SCL
+Text GLabel 7650 2750 0    50   Input ~ 0
+VBAT_OK
+Text GLabel 7650 2650 0    50   Input ~ 0
+ATTINYRQ
+Text GLabel 7650 2550 0    50   Input ~ 0
+BoronEN
+NoConn ~ 7650 2450
+NoConn ~ 7650 3550
+NoConn ~ 7650 3450
+$Comp
+L Device:C_Small C?
+U 1 1 5DE63748
+P 4050 2875
+AR Path="/5D8BD502/5DE63748" Ref="C?"  Part="1" 
+AR Path="/5DE63748" Ref="C10"  Part="1" 
+F 0 "C10" H 4150 2925 50  0000 L CNN
+F 1 "22uF" H 4150 2850 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 4050 2875 50  0001 C CNN
+F 3 "~" H 4050 2875 50  0001 C CNN
+	1    4050 2875
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:LED_Small D1
+U 1 1 5DE97263
+P 7050 3350
+F 0 "D1" H 6525 3375 50  0000 C CNN
+F 1 "LED_Small" H 6675 3300 50  0000 C CNN
+F 2 "Diode_SMD:D_0805_2012Metric" V 7050 3350 50  0001 C CNN
+F 3 "~" V 7050 3350 50  0001 C CNN
+	1    7050 3350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R9
+U 1 1 5DE9781C
+P 7250 3350
+F 0 "R9" V 7150 3350 50  0000 C CNN
+F 1 "100" V 7250 3350 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" H 7250 3350 50  0001 C CNN
+F 3 "~" H 7250 3350 50  0001 C CNN
+	1    7250 3350
+	0    1    -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0118
+U 1 1 5DE97E64
+P 6950 3350
+F 0 "#PWR0118" H 6950 3100 50  0001 C CNN
+F 1 "GND" H 6955 3177 50  0000 C CNN
+F 2 "" H 6950 3350 50  0001 C CNN
+F 3 "" H 6950 3350 50  0001 C CNN
+	1    6950 3350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7650 3350 7350 3350
+$Comp
+L Device:R_Small R10
+U 1 1 5E17A293
+P 3450 3175
+F 0 "R10" H 3275 3200 50  0000 C CNN
+F 1 "100k" H 3250 3275 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" H 3450 3175 50  0001 C CNN
+F 3 "~" H 3450 3175 50  0001 C CNN
+	1    3450 3175
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3300 3075 3450 3075
+Connection ~ 3450 3075
+$Comp
+L power:GND #PWR0119
+U 1 1 5E17E5EC
+P 3450 3275
+F 0 "#PWR0119" H 3450 3025 50  0001 C CNN
+F 1 "GND" H 3455 3102 50  0000 C CNN
+F 2 "" H 3450 3275 50  0001 C CNN
+F 3 "" H 3450 3275 50  0001 C CNN
+	1    3450 3275
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3450 3075 3600 3075
+$Comp
+L MCU_Microchip_ATtiny:ATtiny84A-MU U2
+U 1 1 5E280F3B
+P 8250 3050
+F 0 "U2" H 8175 4000 50  0000 R CNN
+F 1 "ATtiny84A-MU" H 8175 3925 50  0000 R CNN
+F 2 "Package_DFN_QFN:QFN-20-1EP_4x4mm_P0.5mm_EP2.6x2.6mm" H 8250 3050 50  0001 C CIN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/doc8183.pdf" H 8250 3050 50  0001 C CNN
+	1    8250 3050
+	-1   0    0    -1  
+$EndComp
+Text Label 3300 2775 0    50   ~ 0
+BoronLipo
+Text GLabel 7650 2950 0    50   Input ~ 0
+AVR_MISO
+Text GLabel 7150 2950 0    50   Input ~ 0
+AVR_SCK
+Wire Wire Line
+	7150 2850 7150 2950
+Wire Wire Line
+	7150 2850 7650 2850
+Text GLabel 7150 3150 0    50   Input ~ 0
+AVR_MOSI
+$Comp
+L Device:C_Small C2
+U 1 1 5E52A370
+P 7975 1900
+F 0 "C2" H 8067 1946 50  0000 L CNN
+F 1 "1uF" H 8067 1855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 7975 1900 50  0001 C CNN
+F 3 "~" H 7975 1900 50  0001 C CNN
+	1    7975 1900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR02
+U 1 1 5E52E9B0
+P 7975 2000
+F 0 "#PWR02" H 7975 1750 50  0001 C CNN
+F 1 "GND" H 7980 1827 50  0000 C CNN
+F 2 "" H 7975 2000 50  0001 C CNN
+F 3 "" H 7975 2000 50  0001 C CNN
+	1    7975 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7975 1800 8250 1800
+Wire Wire Line
+	8250 1800 8250 2150
+$Comp
+L power:GND #PWR0117
+U 1 1 5DE6C84C
+P 4450 3175
+F 0 "#PWR0117" H 4450 2925 50  0001 C CNN
+F 1 "GND" H 4455 3002 50  0000 C CNN
+F 2 "" H 4450 3175 50  0001 C CNN
+F 3 "" H 4450 3175 50  0001 C CNN
+	1    4450 3175
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3300 2775 4050 2775
+Wire Wire Line
+	4450 3175 4050 3175
+Wire Wire Line
+	4050 3175 4050 2975
+NoConn ~ 3300 2875
+NoConn ~ 3300 2975
+NoConn ~ 3300 3175
+NoConn ~ 3300 3275
+NoConn ~ 3300 3375
+NoConn ~ 3300 3475
+NoConn ~ 3300 3675
+NoConn ~ 2000 3075
+NoConn ~ 2000 2575
+NoConn ~ 2000 2375
+Wire Wire Line
+	7150 3150 7150 3050
+Wire Wire Line
+	7150 3050 7650 3050
+$Comp
+L Analog_Switch:MAX40200AUK U3
+U 1 1 5E2A7B91
+P 4450 2875
+F 0 "U3" H 4450 3242 50  0000 C CNN
+F 1 "MAX40200AUK" H 4450 3151 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5" H 4450 3375 50  0001 C CNN
+F 3 "https://datasheets.maximintegrated.com/en/ds/MAX40200.pdf" H 4450 3375 50  0001 C CNN
+	1    4450 2875
+	-1   0    0    -1  
+$EndComp
+Connection ~ 4450 3175
+Connection ~ 4050 2775
+Text GLabel 7975 1800 0    50   Input ~ 0
+AVR_VCC
+NoConn ~ 2000 2775
+NoConn ~ 2000 3175
+Text GLabel 7650 3650 0    50   Input ~ 0
+AVR_RST
+$Comp
+L Connector:AVR-ISP-6 J2
+U 1 1 5D9924B1
+P 7625 5425
+F 0 "J2" H 7345 5521 50  0000 R CNN
+F 1 "AVR-ISP-6" H 7345 5430 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x03_P2.54mm_Vertical" V 7375 5475 50  0001 C CNN
+F 3 " ~" H 6350 4875 50  0001 C CNN
+	1    7625 5425
+	-1   0    0    -1  
+$EndComp
+Text GLabel 7725 4925 2    50   Input ~ 0
+AVR_VCC
+Text GLabel 7225 5225 0    50   Input ~ 0
+AVR_MISO
+Text GLabel 7225 5425 0    50   Input ~ 0
+AVR_SCK
+Text GLabel 6750 5525 0    50   Input ~ 0
+AVR_RST
+Text GLabel 7225 5325 0    50   Input ~ 0
+AVR_MOSI
+$Comp
+L power:GND #PWR03
+U 1 1 5D993A8B
+P 7725 5825
+F 0 "#PWR03" H 7725 5575 50  0001 C CNN
+F 1 "GND" H 7730 5652 50  0000 C CNN
+F 2 "" H 7725 5825 50  0001 C CNN
+F 3 "" H 7725 5825 50  0001 C CNN
+	1    7725 5825
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R3
+U 1 1 5D959DA0
+P 6750 5275
+F 0 "R3" V 6650 5275 50  0000 C CNN
+F 1 "10k" V 6750 5275 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" H 6750 5275 50  0001 C CNN
+F 3 "~" H 6750 5275 50  0001 C CNN
+	1    6750 5275
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C1
+U 1 1 5E7A568D
+P 6750 5625
+F 0 "C1" H 6842 5671 50  0000 L CNN
+F 1 "0.1uF" H 6842 5580 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6750 5625 50  0001 C CNN
+F 3 "~" H 6750 5625 50  0001 C CNN
+	1    6750 5625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7725 4925 6750 4925
+Wire Wire Line
+	6750 4925 6750 5175
+Wire Wire Line
+	6750 5350 6750 5375
+Connection ~ 6750 5375
+Wire Wire Line
+	6750 5375 6750 5525
+Connection ~ 6750 5525
+Wire Wire Line
+	6750 5525 7225 5525
+Wire Wire Line
+	7725 5825 6750 5825
+Wire Wire Line
+	6750 5825 6750 5725
+Connection ~ 7725 5825
+NoConn ~ 7650 3150
+NoConn ~ 2000 3775
+NoConn ~ 2000 3675
+NoConn ~ 2000 3575
+NoConn ~ 2000 3475
+NoConn ~ 2000 3375
+NoConn ~ 2000 3275
+NoConn ~ 2000 2975
+NoConn ~ 2000 2875
+NoConn ~ 3300 3575
+Text Notes 7625 1625 0    50   ~ 0
+AVR_VCC should be 2.7 – 5.5V
+$EndSCHEMATC
