@@ -1,11 +1,11 @@
 # TinyParticleSupervisor
-Using an ATTINY44 with SpenceKonde/ATTinyCore to control the enable pin on a 3rd gen particle.io board.
+Using an ATTINYx4 with SpenceKonde/ATTinyCore to control the enable pin on a 3rd gen particle.io board.
 Keeps Real Time for only 6uA around 100ppm or worse.  
 ATTINY simulates I2C for two registers and controls a wake pin according to internal timers. 
 
 
 # Wiring
-| Pin Mode      | Function                    | Core Pin | ATTINY84 PIN  |
+| Pin Mode      | Function                    | Core Pin | ATTINYx4 PIN  |
 | ------------- | -------------               | :--------: | :------------: |
 | OUTPUT        | Control Particle EN pin     |    1     | PA1           |
 | INPUT         | Detect if Particle is awake |    2     | PA2           |
